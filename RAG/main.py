@@ -2,6 +2,7 @@ import logging
 import os
 import uuid
 
+from anyio import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI
 import inngest
@@ -24,13 +25,24 @@ inngest_client = inngest.Inngest(
 
 @inngest_client.create_function(
     fn_id="RAG: Ingest PDF",
-    trigger=inngest.TriggerEvent(event="rag/inngest_pdf"),
+    trigger=inngest.TriggerEvent(event="rag/ingest_pdf"),
 )
 async def rag_ingest_pdf(ctx: inngest.Context):
     def _load() -> RAGChunkAndSrc:
-        pdf_path = ctx.event.data["pdf_path"]
-        source_id = ctx.event.data.get("source_id", pdf_path)
-        chunks = load_and_chunk_pdf(pdf_path)
+        raw_path = ctx.event.data["pdf_path"]
+        source_id = ctx.event.data.get("source_id", raw_path)
+
+        path = Path(raw_path)
+        if not path.is_absolute() and not path.exists():
+            # handle "Users/jukchai/..." sent without the leading slash
+            candidate = Path("/") / raw_path
+            if candidate.exists():
+                path = candidate
+
+        if not path.exists():
+            raise FileNotFoundError(f"PDF not found: {path.resolve()}")
+
+        chunks = load_and_chunk_pdf(str(path))
         return RAGChunkAndSrc(chunks=chunks, source_id=source_id)
 
     def _upsert() -> RAGUpSertResult:
