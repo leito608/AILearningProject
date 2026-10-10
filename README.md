@@ -37,17 +37,36 @@ A Streamlit app that classifies uploaded images using a pre-trained MobileNetV2 
 
 This project is a beginner-friendly introduction to image recognition and computer vision.
 
+### 4. Project 4: RAG PDF Ingestion and Question Answering
+Location: `RAG/`
+
+A local document Q&A system that ingests PDF files, stores embeddings in Qdrant, and answers user questions through a Streamlit UI. The app includes:
+
+- PDF upload and local storage
+- text chunking and embedding generation
+- semantic retrieval from a vector database
+- AI-powered answer generation using LLMs
+- asynchronous event-driven background processing with Inngest
+- FastAPI backend and Streamlit frontend for a complete RAG workflow
+
+This project demonstrates a practical production-style retrieval-augmented generation pipeline for document-based knowledge retrieval.
+
 ## Tech Stack
 
 - Python
 - uv for dependency management
 - LangChain and LangGraph
 - OpenAI-compatible Groq API
+- Gemini API for embeddings
 - Streamlit
-- PyPDF2
+- FastAPI
+- Inngest
+- Qdrant vector database
+- PyPDF2 / PDF parsing
 - OpenCV
 - TensorFlow / Keras
 - Python dotenv
+- Docker
 
 ## Repository Structure
 
@@ -66,6 +85,15 @@ AILearningProject/
 │   ├── main.py
 │   ├── pyproject.toml
 │   └── README.md
+├── RAG/
+│   ├── main.py
+│   ├── streamlit_app.py
+│   ├── data_loader.py
+│   ├── vector_db.py
+│   ├── custom_types.py
+│   ├── pyproject.toml
+│   ├── README.md
+│   └── uploads/
 └── .gitignore
 ```
 
@@ -107,6 +135,20 @@ uv run streamlit run main.py
 cd project3
 uv sync
 uv run streamlit run main.py
+```
+
+### Project 4: RAG PDF Assistant
+
+```bash
+cd RAG
+uv sync
+# Start Qdrant in Docker
+# Start the FastAPI app
+uv run uvicorn main:app --reload
+# Start Inngest dev server
+npx inngest-cli@latest dev -u http://127.0.0.1:8000/api/inngest --no-discovery
+# Start the Streamlit UI
+uv run streamlit run streamlit_app.py
 ```
 
 ## Notes
