@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Spring AI Assistant</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        input {
+            width: 70%;
+            padding: 0.5rem;
+        }
+        button {
+            padding: 0.5rem 1rem;
+            margin-left: 0.5rem;
+        }
+        #response-box {
+            margin-top: 1.5rem;
+            white-space: pre-wrap;
+            background: #f4f4f4;
+            padding: 1rem;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<h2>Spring AI Assistant</h2>
+
+<input id="prompt" type="text" placeholder="Ask something..." autofocus>
+<button id="ask-btn">Ask</button>
+
+<div id="response-box">
+    <strong>Response:</strong>
+    <p id="response"></p>
+</div>
+
+<script>
+    // Change this if your backend runs elsewhere.
+    // If index.html is served by Spring itself, use '' (empty) instead.
+    const BACKEND_URL = 'http://localhost:8080';
+
+    const promptInput = document.getElementById('prompt');
+    const askBtn = document.getElementById('ask-btn');
+    const responseEl = document.getElementById('response');
+
+    async function ask() {
+        const prompt = promptInput.value.trim();
+        if (!prompt) return;
+
+        askBtn.disabled = true;
+        askBtn.textContent = 'Thinking...';
+        responseEl.textContent = '';
+
+        try {
+            const res = await fetch(`${BACKEND_URL}/askAI/${encodeURIComponent(prompt)}`);
+            if (!res.ok) {
+                throw new Error(`Server responded with ${res.status}`);
+            }
+            responseEl.textContent = await res.text();
+        } catch (err) {
+            responseEl.textContent = `Error: ${err.message}`;
+        } finally {
+            askBtn.disabled = false;
+            askBtn.textContent = 'Ask';
+        }
+    }
+
+    askBtn.addEventListener('click', ask);
+    promptInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') ask();
+    });
+</script>
+</body>
+</html>
