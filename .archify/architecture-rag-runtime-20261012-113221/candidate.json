@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "PDF RAG Runtime Architecture",
+    "output": "rag-runtime.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/leito608/AILearningProject.git",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "8ad9a47159daccf0547fc6b03c8a01c690178b9c"
+    }
+  },
+  "components": [
+    {
+      "id": "user",
+      "type": "external",
+      "label": "User",
+      "sublabel": "Local browser",
+      "pos": [40, 180],
+      "size": [130, 64]
+    },
+    {
+      "id": "streamlit",
+      "type": "frontend",
+      "label": "Streamlit UI",
+      "sublabel": "Upload + Q&A · :8501",
+      "pos": [280, 180],
+      "size": [170, 70],
+      "sources": [
+        { "path": "RAG/README.md", "line": 61, "end_line": 70 },
+        { "path": "RAG/streamlit_app.py", "line": 102, "end_line": 144 }
+      ]
+    },
+    {
+      "id": "inngest",
+      "type": "messagebus",
+      "label": "Inngest Dev Server",
+      "sublabel": "Event dispatch + run tracking · :8288",
+      "pos": [616, 180],
+      "size": [200, 70],
+      "sources": [
+        { "path": "RAG/README.md", "line": 55, "end_line": 70 },
+        { "path": "RAG/main.py", "line": 18, "end_line": 30 }
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "FastAPI + RAG functions",
+      "sublabel": "Inngest endpoint · :8000",
+      "pos": [990, 180],
+      "size": [205, 70],
+      "sources": [
+        { "path": "RAG/main.py", "line": 26, "end_line": 59 },
+        { "path": "RAG/main.py", "line": 62, "end_line": 118 }
+      ]
+    },
+    {
+      "id": "gemini",
+      "type": "cloud",
+      "label": "Gemini Embeddings API",
+      "sublabel": "gemini-embedding-001",
+      "pos": [1390, 60],
+      "size": [200, 66],
+      "sources": [
+        { "path": "RAG/data_loader.py", "line": 12, "end_line": 18 },
+        { "path": "RAG/data_loader.py", "line": 31, "end_line": 36 }
+      ]
+    },
+    {
+      "id": "groq",
+      "type": "cloud",
+      "label": "Groq Inference API",
+      "sublabel": "gpt-oss-120b",
+      "pos": [1390, 300],
+      "size": [200, 66],
+      "sources": [
+        { "path": "RAG/main.py", "line": 90, "end_line": 113 }
+      ]
+    },
+    {
+      "id": "qdrant",
+      "type": "database",
+      "label": "Qdrant",
+      "sublabel": "Docker · docs collection · volume-backed",
+      "pos": [990, 410],
+      "size": [220, 68],
+      "sources": [
+        { "path": "RAG/vector_db.py", "line": 5, "end_line": 41 },
+        { "path": "RAG/README.md", "line": 29, "end_line": 36 }
+      ]
+    },
+    {
+      "id": "uploads",
+      "type": "cloud",
+      "label": "Local PDF uploads",
+      "sublabel": "uploads/ · shared file path",
+      "pos": [616, 410],
+      "size": [200, 68],
+      "sources": [
+        { "path": "RAG/streamlit_app.py", "line": 36, "end_line": 41 },
+        { "path": "RAG/main.py", "line": 31, "end_line": 46 }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Local development runtime",
+      "wraps": ["streamlit", "inngest", "api", "qdrant", "uploads"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "user-ui",
+      "from": "user",
+      "to": "streamlit",
+      "label": "upload PDF / ask",
+      "variant": "emphasis"
+    },
+    {
+      "id": "ui-events",
+      "from": "streamlit",
+      "to": "inngest",
+      "label": "send events · poll run output"
+    },
+    {
+      "id": "dispatch-functions",
+      "from": "inngest",
+      "to": "api",
+      "label": "POST /api/inngest",
+      "variant": "emphasis"
+    },
+    {
+      "id": "write-upload",
+      "from": "streamlit",
+      "to": "uploads",
+      "label": "write PDF",
+      "fromSide": "bottom",
+      "toSide": "left"
+    },
+    {
+      "id": "read-upload",
+      "from": "api",
+      "to": "uploads",
+      "label": "read pdf_path",
+      "fromSide": "bottom",
+      "toSide": "right"
+    },
+    {
+      "id": "embed-text",
+      "from": "api",
+      "to": "gemini",
+      "label": "embed chunks / question",
+      "fromSide": "top",
+      "toSide": "left"
+    },
+    {
+      "id": "vector-store",
+      "from": "api",
+      "to": "qdrant",
+      "label": "upsert / top-k search",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "generate-answer",
+      "from": "api",
+      "to": "groq",
+      "label": "context-grounded prompt",
+      "fromSide": "right",
+      "toSide": "left"
+    }
+  ]
+}

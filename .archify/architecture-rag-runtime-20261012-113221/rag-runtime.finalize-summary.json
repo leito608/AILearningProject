@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "finalize",
+  "status": "fail",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "/Users/jukchai/Documents/AILearningProject/.archify/architecture-rag-runtime-20261012-113221/candidate.json",
+    "sha256": "7ac4a2ebd281ebc4b60ddd67407c509d8de7cd9dc3ba9526a5474ac195a28526",
+    "bytes": 4482
+  },
+  "artifact": {
+    "path": "/Users/jukchai/Documents/AILearningProject/.archify/architecture-rag-runtime-20261012-113221/rag-runtime.html",
+    "sha256": "5deae364dfb98456049db328baccc9a53d829ccb20e3b6310b740258a507f4ba",
+    "bytes": 763466
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "fail"
+  },
+  "failedStage": "browser-check",
+  "diagnostics": [
+    {
+      "code": "viewer/evidence-path-conflict",
+      "severity": "error",
+      "message": "browser-check will not replace the existing unowned evidence path \"/Users/jukchai/Documents/AILearningProject/.archify/architecture-rag-runtime-20261012-113221/rag-runtime.browser-check.json\".",
+      "subject": {
+        "artifact": "/Users/jukchai/Documents/AILearningProject/.archify/architecture-rag-runtime-20261012-113221/rag-runtime.html",
+        "evidencePath": "/Users/jukchai/Documents/AILearningProject/.archify/architecture-rag-runtime-20261012-113221/rag-runtime.browser-check.json"
+      },
+      "evidence": {
+        "reason": {
+          "code": "ownership-artifact-mismatch"
+        }
+      },
+      "supportedFixes": [
+        "move the conflicting file aside, or choose a separate --out-dir, then rerun browser-check"
+      ]
+    }
+  ],
+  "diagnosticSummary": {
+    "total": 1,
+    "shown": 1,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "/Users/jukchai/Documents/AILearningProject/.archify/architecture-rag-runtime-20261012-113221/rag-runtime.finalize.json",
+    "summaryReceipt": "/Users/jukchai/Documents/AILearningProject/.archify/architecture-rag-runtime-20261012-113221/rag-runtime.finalize-summary.json",
+    "browserCheckReceipt": "/Users/jukchai/Documents/AILearningProject/.archify/architecture-rag-runtime-20261012-113221/rag-runtime.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.0.1",
+    "availableVersion": "3.0.1",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-12T04:34:19.045Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 2113
+}

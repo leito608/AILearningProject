@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "3fbbd76c-a770-43b8-a610-e220960c0439",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "/Users/jukchai/Documents/AILearningProject/.archify/architecture-rag-runtime-20261012-113221/candidate.json",
+  "output": "/Users/jukchai/Documents/AILearningProject/.archify/architecture-rag-runtime-20261012-113221/rag-runtime.html",
+  "specification": {
+    "sha256": "7ac4a2ebd281ebc4b60ddd67407c509d8de7cd9dc3ba9526a5474ac195a28526",
+    "bytes": 4482
+  },
+  "artifact": {
+    "sha256": "5deae364dfb98456049db328baccc9a53d829ccb20e3b6310b740258a507f4ba",
+    "bytes": 763466
+  }
+}
