@@ -51,6 +51,11 @@ A local document Q&A system that ingests PDF files, stores embeddings in Qdrant,
 
 This project demonstrates a practical production-style retrieval-augmented generation pipeline for document-based knowledge retrieval.
 
+### 5. Project 5: Spring AI PDF Ingestion
+Location: `RAGSpringAI/`
+
+A Spring Boot application that reads a bundled PDF, splits it into documents, and stores them in a PostgreSQL/pgvector vector store. It uses Ollama for chat and embedding models.
+
 ## Tech Stack
 
 - Python
@@ -67,12 +72,20 @@ This project demonstrates a practical production-style retrieval-augmented gener
 - TensorFlow / Keras
 - Python dotenv
 - Docker
+- Java 17
+- Spring Boot and Spring AI
+- Ollama
+- PostgreSQL with pgvector
 
 ## Repository Structure
 
 ```text
 AILearningProject/
 ├── README.md
+├── RAGSpringAI/
+│   ├── compose.yaml
+│   ├── pom.xml
+│   └── src/
 ├── project1/
 │   ├── main.py
 │   ├── pyproject.toml
@@ -102,6 +115,8 @@ AILearningProject/
 - Python 3.12+ (Project 3 requires Python 3.12, while the others use Python 3.14 in their configuration)
 - uv installed on your machine
 - A Groq API key for projects that connect to the Groq API
+- Java 17+ and Docker for `RAGSpringAI`
+- Ollama installed and running at `http://localhost:11434` for `RAGSpringAI`
 
 ## Environment Setup
 
@@ -150,6 +165,30 @@ npx inngest-cli@latest dev -u http://127.0.0.1:8000/api/inngest --no-discovery
 # Start the Streamlit UI
 uv run streamlit run streamlit_app.py
 ```
+
+### Project 5: Spring AI PDF Ingestion
+
+Start the pgvector database from the repository root:
+
+```bash
+docker compose -f RAGSpringAI/compose.yaml up -d
+```
+
+Make sure Ollama is running and the configured models are available:
+
+```bash
+ollama pull llama3.2:3b
+ollama pull nomic-embed-text
+```
+
+Run the Spring Boot application:
+
+```bash
+cd RAGSpringAI
+./mvnw spring-boot:run
+```
+
+On startup, the application ingests `src/main/resources/pdf/spring-boot-reference.pdf` and stores its document chunks in pgvector. The database is published on `localhost:5432`; that port must be available.
 
 ## Notes
 
