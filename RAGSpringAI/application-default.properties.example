@@ -1,0 +1,3 @@
+# Copy this file to application-default.properties and replace the value below.
+# This file is ignored by Git so your API key stays local.
+spring.ai.google.genai.api-key=replace-with-your-gemini-api-key
