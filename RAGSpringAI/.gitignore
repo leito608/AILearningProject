@@ -1,6 +1,7 @@
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
+application-default.properties
 !**/src/main/**/target/
 !**/src/test/**/target/
 

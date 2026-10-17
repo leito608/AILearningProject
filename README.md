@@ -181,6 +181,11 @@ ollama pull llama3.2:3b
 ollama pull nomic-embed-text
 ```
 
+To configure Gemini locally, copy `RAGSpringAI/application-default.properties.example`
+to `RAGSpringAI/application-default.properties` and replace the placeholder with
+your Gemini API key. This file is ignored by Git and is loaded by Spring Boot's
+default profile when no other profile is active. Do not commit or share the file.
+
 Run the Spring Boot application:
 
 ```bash
