@@ -2,10 +2,41 @@ from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-
+from langchain.chat_models import init_chat_model
 load_dotenv()
 
+def excercise_first_chain():
+    """Exercise: create a chain that:
+    1. Take a product name and target audience as input.
+    2. Generate a marketing tagline
+    3. Return just the tagline
 
+    Test with: product="AI Course", audience="developers"
+    """
+    prompt = ChatPromptTemplate.from_template("Create a shortmarketing tagline for {product} targeting {audience}")
+    llm = ChatGoogleGenerativeAI(model="gemini-3.5-flash-lite", temperature=0.4)
+    parser = StrOutputParser()
+    chain = prompt | llm | parser
+
+    result = chain.invoke({"product": "AI Course", "audience": "developers"})
+    print(f"Tagline: {result}")
+    return chain
+
+def new_way():
+    """Demonstrate a new way to create a chain."""
+    model = init_chat_model("gemini-3.5-flash-lite",
+                            model_provider="google_genai",
+                            temperature=0.4,
+                            max_output_tokens=1500,
+                            max_retries=3)
+    
+    prompt = ChatPromptTemplate.from_template("Create a short marketing tagline for {product} targeting {audience}")
+    parser = StrOutputParser()
+    chain = prompt | model | parser
+
+    result = chain.invoke({"product": "AI Course", "audience": "developers"})
+    print(f"Tagline: {result}")
+    return chain
 
 def demo_schema_inspection():
     """Demonstrate schema inspection for the chain."""
@@ -66,8 +97,9 @@ def demo_basic_chain():
 
 def main():
     #demo_steaming()
-    demo_schema_inspection()
+    #demo_schema_inspection()
+    #excercise_first_chain()
+    new_way()
 
 if __name__ == "__main__":
     main()
-
