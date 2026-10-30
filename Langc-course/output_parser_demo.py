@@ -77,6 +77,7 @@ chain = prompt | structured_model
 result = chain.invoke({"movie_title": "Dune"})
 print(f"Result from template: {result.rating}")
 
+# Structured output parser example for company information 
 
 class CompanyInfo(BaseModel):
     name: str = Field(description="The name of the company")
@@ -84,6 +85,7 @@ class CompanyInfo(BaseModel):
     employees: int = Field(description="The number of employees in the company")
     headquarters: str = Field(description="The location of the company's headquarters")
     directors: str = Field(description="The directors of the company")
+    products: str = Field(description="The products offered by the company")
 
 company_model = llm.with_structured_output(CompanyInfo)
 prompt = ChatPromptTemplate.from_template("Provide information for company: {company_name}")
@@ -96,3 +98,7 @@ print(f"Industry: {result.industry}")
 print(f"Employees: {result.employees}")
 print(f"Headquarters: {result.headquarters}")
 print(f"Directors: {result.directors}")
+print(f"Products: {result.products}")
+
+
+

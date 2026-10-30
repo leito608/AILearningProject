@@ -584,6 +584,7 @@ dependencies = [
     { name = "langchain-google-genai" },
     { name = "langchain-openai" },
     { name = "langgraph" },
+    { name = "langsmith" },
     { name = "python-dotenv" },
 ]
 
@@ -594,6 +595,7 @@ requires-dist = [
     { name = "langchain-google-genai", specifier = ">=4.4.2" },
     { name = "langchain-openai", specifier = ">=1.7.3" },
     { name = "langgraph", specifier = ">=1.2.18" },
+    { name = "langsmith", specifier = ">=0.14.12" },
     { name = "python-dotenv", specifier = ">=1.2.4" },
 ]
 
