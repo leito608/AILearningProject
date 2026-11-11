@@ -21,7 +21,7 @@ model = init_chat_model(
     model_provider="google_genai",
     max_retries=3,
     streaming=True,
-)
+) 
 
 def demo_basic_template():
     simple = ChatPromptTemplate.from_template("Translate '{text}' to '{language}'")
