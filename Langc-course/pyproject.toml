@@ -13,11 +13,20 @@ dependencies = [
     "langchain-community>=0.4.2",
     "langchain-core>=1.7.0",
     "langchain-google-genai>=4.4.2",
+    "langchain-huggingface>=1.2.3",
+    "langchain-ollama>=1.1.0",
     "langchain-openai>=1.7.3",
     "langgraph>=1.2.18",
     "langsmith>=0.14.12",
+    "numpy>=1.26",
+    "numpy<2 ; python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'darwin'",
     "pypdf>=7.0.1",
     "python-dotenv>=1.2.4",
+    "sentence-transformers>=5.7.0",
+    "torch<2.3 ; platform_machine == 'x86_64' and sys_platform == 'darwin'",
+    "transformers<4.50 ; platform_machine == 'x86_64' and sys_platform == 'darwin'",
+    "langchain-chroma>=1.1.0",
+    "onnxruntime>=1.23,<1.24 ; platform_machine == 'x86_64' and sys_platform == 'darwin'",
 ]
 
 [project.scripts]
