@@ -4,7 +4,7 @@ from langchain_classic.retrievers.document_compressors import LLMChainExtractor
 from langchain_classic.retrievers import EnsembleRetriever
 from langchain_community.retrievers import BM25Retriever
 from langchain_classic.retrievers import ParentDocumentRetriever
-from langchain_classic.storage import InMemoryByteStore
+from langchain_classic.storage import InMemoryStore
 from langchain_chroma import Chroma
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_ollama import OllamaEmbeddings
@@ -276,8 +276,122 @@ def demo_ensemble_hybrid_search():
         print("=" * 60) 
     # End of demo_ensemble_hybrid_search function
 
+def demo_parent_document_retriever():
+    long_doc = Document(
+        page_content="""
+# Complete Guide to Building AI Agents
+
+## Chapter 1: Introduction to AI Agents
+
+AI agents are autonomous systems that can perceive their environment, make decisions, and take actions to achieve goals. Unlike simple chatbots, agents can use tools, maintain state, and execute multi-step plans.
+
+The key components of an AI agent include:
+- A language model for reasoning
+- Tools for interacting with external systems
+- Memory for maintaining context
+- A planning mechanism for complex tasks
+
+## Chapter 2: Agent Frameworks
+
+Several frameworks exist for building AI agents:
+
+LangChain provides the foundational abstractions for chains and simple agents. It excels at straightforward tool-calling patterns and integrates with many LLM providers.
+
+LangGraph extends LangChain for complex, stateful agents. It introduces graph-based state management, enabling cycles, human-in-the-loop workflows, and persistent execution.
+
+CrewAI focuses on multi-agent collaboration, allowing teams of specialized agents to work together on complex tasks.
+
+## Chapter 3: Production Considerations
+
+Deploying agents to production requires careful attention to:
+- Error handling and fallbacks
+- Token usage optimization
+- Observability and tracing
+- Security and access control
+- State persistence and recovery
+
+LangSmith provides observability for LangChain/LangGraph applications, offering tracing, evaluation, and monitoring capabilities.
+        """,
+        metadata={"source": "ai_agents_guide.md"},
+    )
+    parent_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=800,
+        chunk_overlap=100
+    )
+    child_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=200,
+        chunk_overlap=20
+    )
+    store = InMemoryStore()
+    vector_store = Chroma(
+        collection_name="parent_child_demo",
+        embedding_function=gg_embeddings
+    )
+    retriever = ParentDocumentRetriever(
+        vectorstore=vector_store,
+        docstore=store,
+        parent_splitter=parent_splitter,
+        child_splitter=child_splitter
+    )
+    retriever.add_documents([long_doc])
+    query = "What is LangGraph used for?"
+    print("Query:", query)
+
+    child_docs = vector_store.similarity_search(query, k=1)
+    print(f"\n--- /Child chunk (what search found) ---")
+    print(f"Length of child_docs: {len(child_docs[0].page_content)} chars")
+    print(f"Content of child_docs: {child_docs[0].page_content}")
+
+    parent_docs = retriever.invoke(query)
+    print(f"\n--- /Parent chunk (what search found) ---")
+    print(f"Length of parent_docs: {len(parent_docs[0].page_content)} chars")
+    print(f"Content of parent_docs: {parent_docs[0].page_content[:200]}...")
+
+def demo_advanced_rag_chain():
+    """Complete demonstration of the advanced RAG chain."""
+    print("=== Advanced RAG Chain Demo === ")
+
+    vectorestore = create_base_vectorstore()
+    multi_retriever = MultiQueryRetriever.from_llm(
+        llm=llm,
+        retriever=vectorestore.as_retriever(search_kwargs={"k": 3})
+    )
+
+    compressor = LLMChainExtractor.from_llm(llm)
+    advanced_retriever = ContextualCompressionRetriever(
+        base_retriever=multi_retriever,
+        base_compressor=compressor
+    )
+    prompt = ChatPromptTemplate.from_template(
+        """
+        Answer the question based on the following context. Be specific and cite which part of the context supports your answer.    
+        Context: {context}
+        Question: {question}
+        Answer:
+        """
+    )
+    def format_docs(docs):
+        return "\n\n".join([doc.page_content for doc in docs])
+
+    rag_chain = (
+        {"context": advanced_retriever | format_docs, "question": RunnablePassthrough()}
+        | prompt
+        | llm
+        | StrOutputParser()
+    )
+
+    question = "How can I store and search embeddings?"
+    print("Query:", question)
+    answer = rag_chain.invoke(question)
+    print("Answer:", answer)
+    
+
+
+
 
 if __name__ == "__main__":
     #demo_multi_query_retriever()
     #demo_contextual_compression()
-    demo_ensemble_hybrid_search()
+    #demo_ensemble_hybrid_search()
+    #demo_parent_document_retriever()
+    demo_advanced_rag_chain()
